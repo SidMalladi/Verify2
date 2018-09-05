@@ -143,12 +143,12 @@ public class LoaderDBActivity extends AppCompatActivity {
                     final Iterator cells = row.cellIterator();
                     while (cells.hasNext()) {
                         final Cell cell = (Cell) cells.next();
-                        header.append(cell.toString().replaceAll("\\s+", ""));
+                        header.append(cell.toString());
                         if (cells.hasNext()) header.append(",");
                     }
 
                     mDelimiter = ",";
-                    mHeader = header.toString().replaceAll("\\s+", "");
+                    mHeader = header.toString();
                 }
             } else {
                 //plain text file support
@@ -162,7 +162,7 @@ public class LoaderDBActivity extends AppCompatActivity {
                 final InputStream is = getContentResolver().openInputStream(mFileUri);
                 if (is != null) {
                     final BufferedReader br = new BufferedReader(new InputStreamReader(is));
-                    mHeader = br.readLine().replaceAll("\\s+", "");
+                    mHeader = br.readLine();
                     br.close();
                 }
             }
@@ -182,7 +182,7 @@ public class LoaderDBActivity extends AppCompatActivity {
 
                 chooseHeaderButton.setEnabled(true);
                 mIdHeaderIndex = position;
-                mIdHeader = ((TextView) view).getText().toString();
+                mIdHeader = ((TextView) view).getText().toString().replaceAll("\\s+", "");
             }
         });
 
@@ -308,7 +308,7 @@ public class LoaderDBActivity extends AppCompatActivity {
         for (int i = 0; i < colSize; i++) {
             if (!cols[i].matches("[0-9]+")) {
                 dbExecCreate.append(',');
-                dbExecCreate.append(cols[i]);
+                dbExecCreate.append(cols[i].replaceAll("\\s+", ""));
                 dbExecCreate.append(" TEXT");
             }
         }
@@ -340,13 +340,13 @@ public class LoaderDBActivity extends AppCompatActivity {
 
                 if (mDelimiter != null) {
                     final BufferedReader br = new BufferedReader(new InputStreamReader(is));
-                    final String[] headers = br.readLine().split(mDelimiter);
+                    final String[] headers = br.readLine().replaceAll("\\s+", "").split(mDelimiter);
 
                     String temp;
                     ContentValues entry = new ContentValues();
                     db.beginTransaction();
                     while ((temp = br.readLine()) != null) {
-                        String[] id_line = temp.split(mDelimiter);
+                        String[] id_line = temp.replaceAll("\\s+", "").split(mDelimiter);
                         int size = id_line.length;
                         if (size != 0 && size <= headers.length) {
 
@@ -440,7 +440,7 @@ public class LoaderDBActivity extends AppCompatActivity {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     choosePairButton.setEnabled(true);
-                    mPairCol = ((TextView) view).getText().toString();
+                    mPairCol = ((TextView) view).getText().toString().replaceAll("\\s+", "");
                 }
             });
         } else {
@@ -451,7 +451,7 @@ public class LoaderDBActivity extends AppCompatActivity {
                 headerList.setItemChecked(i, !headerList.isItemChecked(i));
                 final String newCol = headerList.getAdapter().getItem(i).toString();
                 if (displayCols.contains(newCol)) displayCols.remove(newCol);
-                displayCols.add(newCol);
+                displayCols.add(newCol.replaceAll("\\s+", ""));
             }
             finishButton.setEnabled(true);
 
@@ -460,7 +460,7 @@ public class LoaderDBActivity extends AppCompatActivity {
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     final String newCol = ((TextView) view).getText().toString();
                     if (displayCols.contains(newCol)) displayCols.remove(newCol);
-                    else displayCols.add(newCol);
+                    else displayCols.add(newCol.replaceAll("\\s+", ""));
                 }
             });
         }
