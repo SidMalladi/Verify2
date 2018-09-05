@@ -143,12 +143,12 @@ public class LoaderDBActivity extends AppCompatActivity {
                     final Iterator cells = row.cellIterator();
                     while (cells.hasNext()) {
                         final Cell cell = (Cell) cells.next();
-                        header.append(cell.toString());
+                        header.append(cell.toString().replaceAll("\\s+", ""));
                         if (cells.hasNext()) header.append(",");
                     }
 
                     mDelimiter = ",";
-                    mHeader = header.toString();
+                    mHeader = header.toString().replaceAll("\\s+", "");
                 }
             } else {
                 //plain text file support
@@ -162,7 +162,7 @@ public class LoaderDBActivity extends AppCompatActivity {
                 final InputStream is = getContentResolver().openInputStream(mFileUri);
                 if (is != null) {
                     final BufferedReader br = new BufferedReader(new InputStreamReader(is));
-                    mHeader = br.readLine();
+                    mHeader = br.readLine().replaceAll("\\s+", "");
                     br.close();
                 }
             }
