@@ -34,4 +34,5 @@ class VerifyConstants {
     final static String PAIR_COL_EXTRA = "org.phenoapps.verify.PAIR_COL_EXTRA";
     final static String PAIR_MODE_LOADER = "org.phenoapps.verify.PAIR_MODE_LOADER";
 
+    final static String FILE_NAME = "org.phenoapps.verify.FILE_NAME";
 }

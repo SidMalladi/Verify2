@@ -2,10 +2,14 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/Verify.iml" filepath="$PROJECT_DIR$/Verify.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/Verify.iml" filepath="$PROJECT_DIR$/.idea/Verify.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/Verify.iml" filepath="$PROJECT_DIR$/.idea/Verify.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Verify.iml" filepath="$PROJECT_DIR$/Verify.iml" />
+      <module fileurl="file://$PROJECT_DIR$/androidlibrary-release/androidlibrary-release.iml" filepath="$PROJECT_DIR$/androidlibrary-release/androidlibrary-release.iml" />
       <module fileurl="file://$PROJECT_DIR$/androidlibrary-release/androidlibrary-release.iml" filepath="$PROJECT_DIR$/androidlibrary-release/androidlibrary-release.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/javalib/javalib.iml" filepath="$PROJECT_DIR$/javalib/javalib.iml" />
       <module fileurl="file://$PROJECT_DIR$/javalib/javalib.iml" filepath="$PROJECT_DIR$/javalib/javalib.iml" />
     </modules>
   </component>

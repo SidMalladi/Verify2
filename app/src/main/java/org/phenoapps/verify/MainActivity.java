@@ -13,10 +13,12 @@ import android.media.MediaPlayer;
 import android.media.MediaScannerConnection;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Parcelable;
 import android.preference.PreferenceManager;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
@@ -87,6 +89,8 @@ public class MainActivity extends AppCompatActivity {
     private String mPairCol;
     private String mNextPairVal;
 
+    private String mFileName = "";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -138,6 +142,7 @@ public class MainActivity extends AppCompatActivity {
                 launchIntro();
         }
 
+        mFileName = sharedPref.getString(SettingsActivity.FILE_NAME, "");
 
         ActivityCompat.requestPermissions(this, VerifyConstants.permissions, VerifyConstants.PERM_REQ);
 
@@ -194,11 +199,11 @@ public class MainActivity extends AppCompatActivity {
             String deleteIdQuery = "DELETE FROM VERIFY WHERE " + mListId + " = ?";
             sqlDeleteId = db.compileStatement(deleteIdQuery);
 
-            String updateCheckedQuery = "UPDATE VERIFY SET c = 1 WHERE " + mListId + " = ?";
+            String updateCheckedQuery = "UPDATE VERIFY SET color = 1 WHERE " + mListId + " = ?";
             sqlUpdateChecked = db.compileStatement(updateCheckedQuery);
 
             String updateUserAndDateQuery =
-                    "UPDATE VERIFY SET user = ?, d = ?, s = s + 1 WHERE " + mListId + " = ?";
+                    "UPDATE VERIFY SET user = ?, date = ?, scan_count = scan_count + 1 WHERE " + mListId + " = ?";
             sqlUpdateUserAndDate = db.compileStatement(updateUserAndDateQuery);
         } catch(SQLiteException e) {
             e.printStackTrace();
@@ -275,7 +280,7 @@ public class MainActivity extends AppCompatActivity {
         int scanMode = Integer.valueOf(sharedPref.getString(SettingsActivity.SCAN_MODE_LIST, "-1"));
         boolean displayAux = sharedPref.getBoolean(SettingsActivity.AUX_INFO, true);
 
-        String scannedId = ((TextView) findViewById(org.phenoapps.verify.R.id.scannerTextView))
+        String scannedId = ((EditText) findViewById(org.phenoapps.verify.R.id.scannerTextView))
                 .getText().toString();
 
         if (mIds != null && mIds.size() > 0) {
@@ -301,11 +306,11 @@ public class MainActivity extends AppCompatActivity {
                                 cursor.getColumnIndexOrThrow(header)
                         );
 
-                        if (header.equals("c") || header.equals("s") || header.equals("d")
+                        if (header.equals("color") || header.equals("scan_count") || header.equals("date")
                                 || header.equals("user") || header.equals("note")) {
-                            if (header.equals("c")) continue;
-                            else if (header.equals("s")) auxValues.append("Number of scans");
-                            else if (header.equals("d")) auxValues.append("Date");
+                            if (header.equals("color")) continue;
+                            else if (header.equals("scan_count")) auxValues.append("Number of scans");
+                            else if (header.equals("date")) auxValues.append("Date");
                             else auxValues.append(header);
                             auxValues.append(" : ");
                             if (val != null) auxValues.append(val);
@@ -321,6 +326,7 @@ public class MainActivity extends AppCompatActivity {
                 cursor.close();
                 ((TextView) findViewById(org.phenoapps.verify.R.id.valueView)).setText(values.toString());
                 ((TextView) findViewById(R.id.auxValueView)).setText(auxValues.toString());
+                ((EditText) findViewById(R.id.scannerTextView)).setText("");
             } else {
                 if (scanMode != 2) {
                     ringNotification(false);
@@ -470,7 +476,7 @@ public class MainActivity extends AppCompatActivity {
 
         final String table = IdEntryContract.IdEntry.TABLE_NAME;
         final String[] columns = new String[] { mListId };
-        final String selection = "c = 1";
+        final String selection = "color = 1";
 
         try {
             final Cursor cursor = db.query(table, columns, selection, null, null, null, null);
@@ -549,6 +555,15 @@ public class MainActivity extends AppCompatActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Choose name for exported file.");
         final EditText input = new EditText(this);
+
+        final Calendar c = Calendar.getInstance();
+        final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+
+        int lastDot = mFileName.lastIndexOf('.');
+        if (lastDot != -1) {
+            mFileName = mFileName.substring(0, lastDot);
+        }
+        input.setText(mFileName + "_" + sdf.format(c.getTime()));
         input.setInputType(InputType.TYPE_CLASS_TEXT);
         builder.setView(input);
 
@@ -592,6 +607,13 @@ public class MainActivity extends AppCompatActivity {
                             cursor.close();
                             fstream.flush();
                             fstream.close();
+                            scanFile(MainActivity.this, output);
+                            /*MediaScannerConnection.scanFile(MainActivity.this, new String[] {output.toString()}, null, new MediaScannerConnection.OnScanCompletedListener() {
+                                @Override
+                                public void onScanCompleted(String path, Uri uri) {
+                                    Log.v("scan complete", path);
+                                }
+                            });*/
                         } catch (SQLiteException e) {
                             e.printStackTrace();
                             Toast.makeText(MainActivity.this, "Error exporting file, is your table empty?", Toast.LENGTH_SHORT).show();
@@ -744,7 +766,10 @@ public class MainActivity extends AppCompatActivity {
 
                         mListId = null;
                         mPairCol = null;
+                        mFileName = "";
 
+                        if (intent.hasExtra(VerifyConstants.FILE_NAME))
+                            mFileName = intent.getStringExtra(VerifyConstants.FILE_NAME);
                         if (intent.hasExtra(VerifyConstants.LIST_ID_EXTRA))
                             mListId = intent.getStringExtra(VerifyConstants.LIST_ID_EXTRA);
                         if (intent.hasExtra(VerifyConstants.PAIR_COL_EXTRA))
@@ -768,6 +793,7 @@ public class MainActivity extends AppCompatActivity {
                                     "Switching to default mode, no pair ID found.",
                                     Toast.LENGTH_SHORT).show();
                         }
+                        editor.putString(SettingsActivity.FILE_NAME, mFileName);
                         editor.putString(SettingsActivity.PAIR_NAME, mPairCol);
                         editor.putString(SettingsActivity.LIST_KEY_NAME, mListId);
                         editor.apply();

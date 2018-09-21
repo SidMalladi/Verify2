@@ -8,6 +8,7 @@ import android.view.MenuItem;
 
 public class SettingsActivity extends AppCompatActivity {
 
+    public static String FILE_NAME = "org.phenoapps.verify.FILE_NAME";
     public static String SCAN_MODE_LIST = "org.phenoapps.verify.SCAN_MODE";
     public static String AUDIO_ENABLED = "org.phenoapps.verify.AUDIO_ENABLED";
     public static String TUTORIAL_MODE = "org.phenoapps.verify.TUTORIAL_MODE";

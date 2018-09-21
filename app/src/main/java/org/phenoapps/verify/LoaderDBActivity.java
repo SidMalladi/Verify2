@@ -17,6 +17,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -25,6 +27,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
@@ -51,6 +54,7 @@ public class LoaderDBActivity extends AppCompatActivity {
     private String mDelimiter;
     private String mFileExtension;
     private String mFilePath;
+    private String mFileName;
 
     private Workbook mCurrentWorkbook;
 
@@ -91,9 +95,9 @@ public class LoaderDBActivity extends AppCompatActivity {
 
         //default column names
         mDefaultCols = new HashSet<>(5);
-        mDefaultCols.add("d");
-        mDefaultCols.add("c");
-        mDefaultCols.add("s");
+        mDefaultCols.add("date");
+        mDefaultCols.add("color");
+        mDefaultCols.add("scan_count");
         mDefaultCols.add("user");
         mDefaultCols.add("note");
 
@@ -101,18 +105,26 @@ public class LoaderDBActivity extends AppCompatActivity {
 
         mFileUri = getIntent().getData();
 
+        int lastSlash = mFileUri.getPath().lastIndexOf('/');
+        if (lastSlash != -1) {
+            mFileName = mFileUri.getPath().substring(lastSlash + 1);
+        } else mFileName = "";
+
         parseHeaders(mFileUri);
 
         //if unsupported file type, start delimiter tutorial
-        if (mDelimiter == null) {
-            if (mHeader == null) {
+        if (mDelimiter == null || mHeader == null) {
+            Toast.makeText(this, "There was a problem reading this file.", Toast.LENGTH_LONG).show();
+            finish();
+           /* if (mHeader == null) {
                 tutorialText.setText("Error reading file.");
             } else {
                 separatorText.setVisibility(View.VISIBLE);
+                getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE|WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
                 doneButton.setVisibility(View.VISIBLE);
                 tutorialText.setText(org.phenoapps.verify.R.string.choose_separator_tutorial);
                 tutorialText.append(mHeader);
-            }
+            }*/
 
         } else { //display header list
             displayHeaderList();
@@ -124,8 +136,14 @@ public class LoaderDBActivity extends AppCompatActivity {
         try {
             //query file path type
             mFilePath = getPath(mFileUri);
-            final String[] pathSplit = mFilePath.split("\\.");
-            mFileExtension = pathSplit[pathSplit.length - 1];
+            int lastDot = mFileUri.toString().lastIndexOf(".");
+
+            if (lastDot == -1) {
+                Toast.makeText(this, "Imported file must have an extension. (e.g: .csv, .tsv)", Toast.LENGTH_LONG).show();
+                finish();
+            }
+
+            mFileExtension = mFileUri.toString().substring(lastDot + 1);
 
             StringBuilder header = new StringBuilder();
 
@@ -256,7 +274,7 @@ public class LoaderDBActivity extends AppCompatActivity {
                 final Intent intent = new Intent();
                 intent.putExtra(VerifyConstants.LIST_ID_EXTRA, mIdHeader);
                 intent.putExtra(VerifyConstants.PAIR_COL_EXTRA, mPairCol);
-
+                intent.putExtra(VerifyConstants.FILE_NAME, mFileName);
                 setResult(RESULT_OK, intent);
                 finish();
 
@@ -297,11 +315,11 @@ public class LoaderDBActivity extends AppCompatActivity {
             dbExecCreate.append(mPairCol);
             dbExecCreate.append(" TEXT");
         }
-        dbExecCreate.append(", d DATE");
+        dbExecCreate.append(", date DATE");
         dbExecCreate.append(", user TEXT");
         dbExecCreate.append(", note TEXT");
-        dbExecCreate.append(", s INT DEFAULT 0");
-        dbExecCreate.append(", c INT");
+        dbExecCreate.append(", scan_count INT DEFAULT 0");
+        dbExecCreate.append(", color INT");
 
         final String[] cols = displayCols.toArray(new String[] {});
         final int colSize = cols.length;
