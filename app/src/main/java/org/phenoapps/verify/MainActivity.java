@@ -101,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
         mIds = new SparseArray<>();
 
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-        
+
         final View auxInfo = findViewById(R.id.auxScrollView);
         final View auxValue = findViewById(R.id.auxValueView);
 
@@ -161,7 +161,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void copyRawToVerify(File verifyDirectory, String fileName, int rawId) {
-        
+
         String fieldSampleName = verifyDirectory.getAbsolutePath() + "/" + fileName;
         File fieldSampleFile = new File(fieldSampleName);
         if (!Arrays.asList(verifyDirectory.listFiles()).contains(fieldSampleFile)) {
@@ -896,6 +896,14 @@ public class MainActivity extends AppCompatActivity {
                 runOnUiThread(new Runnable() {
                     @Override public void run() {
                         startActivity(intro_intent);
+                    }
+                });
+                break;
+            case org.phenoapps.verify.R.id.nav_compare:
+                final Intent compareIntent = new Intent(MainActivity.this, CompareActivity.class);
+                runOnUiThread(new Runnable() {
+                    @Override public void run() {
+                        startActivity(compareIntent);
                     }
                 });
                 break;

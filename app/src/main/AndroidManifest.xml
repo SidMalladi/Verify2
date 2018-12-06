@@ -23,6 +23,8 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".CompareActivity"/>
+
         <activity
             android:name="org.phenoapps.verify.ScanActivity" />
 
