@@ -6,4 +6,9 @@
         android:icon="@drawable/ic_barcode_scan"
         android:title="@string/action_camera"
         app:showAsAction="ifRoom"/>
+    <item
+        android:id="@+id/action_compare"
+        android:icon="@drawable/ic_file_compare"
+        android:title="Barcode Compare"
+        app:showAsAction="ifRoom" />
 </menu>

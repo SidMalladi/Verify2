@@ -742,6 +742,14 @@ public class MainActivity extends AppCompatActivity {
                 final Intent cameraIntent = new Intent(this, ScanActivity.class);
                 startActivityForResult(cameraIntent, VerifyConstants.CAMERA_INTENT_REQ);
                 break;
+            case R.id.action_compare:
+                final Intent compareIntent = new Intent(MainActivity.this, CompareActivity.class);
+                runOnUiThread(new Runnable() {
+                    @Override public void run() {
+                        startActivity(compareIntent);
+                    }
+                });
+                break;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -896,14 +904,6 @@ public class MainActivity extends AppCompatActivity {
                 runOnUiThread(new Runnable() {
                     @Override public void run() {
                         startActivity(intro_intent);
-                    }
-                });
-                break;
-            case org.phenoapps.verify.R.id.nav_compare:
-                final Intent compareIntent = new Intent(MainActivity.this, CompareActivity.class);
-                runOnUiThread(new Runnable() {
-                    @Override public void run() {
-                        startActivity(compareIntent);
                     }
                 });
                 break;

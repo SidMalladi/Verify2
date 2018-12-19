@@ -24,8 +24,5 @@
         android:id="@+id/nav_intro"
         android:icon="@drawable/ic_help"
         android:title="Intro" />
-    <item
-        android:id="@+id/nav_compare"
-        android:icon="@drawable/ic_help"
-        android:title="Compare" />
+
 </menu>

@@ -1,9 +1,12 @@
 package org.phenoapps.verify
 
 import android.app.Activity
+import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.preference.PreferenceManager
+import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.text.Editable
 import android.text.TextWatcher
@@ -12,19 +15,30 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.RadioButton
+import android.widget.RadioGroup
 
 import com.google.zxing.ResultPoint
 
 import com.journeyapps.barcodescanner.BarcodeCallback
 import com.journeyapps.barcodescanner.BarcodeResult
 import com.journeyapps.barcodescanner.DecoratedBarcodeView
+import java.util.*
+import kotlin.concurrent.schedule
 
 class CompareActivity : AppCompatActivity() {
+
+    enum class Mode {
+        Contains,
+        Matches
+    }
 
     private lateinit var barcodeScannerView: DecoratedBarcodeView
     private lateinit var firstEditText: EditText
     private lateinit var secondEditText: EditText
     private lateinit var imageView: ImageView
+
+    private var mMode: Mode = Mode.Matches
 
     //keeps track of which edit text is being scanned into, at first it is the top edit text.
     private var mFocused: Int = R.id.editText
@@ -45,13 +59,8 @@ class CompareActivity : AppCompatActivity() {
                 }
 
                 findViewById<EditText>(mFocused).requestFocus()
-
-                //barcodeScannerView.setStatusText(result.text)
-                //val imageView = findViewById<View>(org.phenoapps.verify.R.id.barcodePreview) as ImageView
-                //imageView.setImageBitmap(result.getBitmapWithResultPoints(Color.GREEN))
-
             }
-
+            
             barcodeScannerView.resume()
 
         }
@@ -63,6 +72,30 @@ class CompareActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
+
+        val radioGroup = RadioGroup(this)
+        val containsRadioButton = RadioButton(this)
+        containsRadioButton.text = "Contains"
+        val matchesRadioButton = RadioButton(this)
+        matchesRadioButton.text = "Matches"
+        radioGroup.addView(containsRadioButton)
+        radioGroup.addView(matchesRadioButton)
+
+        val builder = AlertDialog.Builder(this).apply {
+
+            setView(radioGroup)
+
+            setTitle("Choose compare mode:")
+
+            setPositiveButton("OK") { _, _ ->
+                when (radioGroup.checkedRadioButtonId) {
+                    containsRadioButton.id -> mMode = Mode.Contains
+                    matchesRadioButton.id -> mMode = Mode.Matches
+                }
+            }
+        }
+
+        builder.show()
 
         imageView = findViewById(R.id.imageView)
         firstEditText = findViewById<EditText>(R.id.editText)
@@ -84,13 +117,28 @@ class CompareActivity : AppCompatActivity() {
             }
 
             override fun afterTextChanged(s: Editable?) {
-                if (firstEditText.text.isNotEmpty() && secondEditText.text.isNotEmpty()) {
-                    when {
-                        firstEditText.text.toString() == secondEditText.text.toString() -> {
-                            imageView.setImageResource(R.drawable.ic_checkbox_marked_circle)
-                        } else -> imageView.setImageResource(R.drawable.ic_alpha_x_circle)
-                    }
 
+                if (firstEditText.text.isNotEmpty() && secondEditText.text.isNotEmpty()) {
+
+                    val first = firstEditText.text
+                    val second = secondEditText.text
+                    when (mMode) {
+                        Mode.Contains -> {
+                            when {
+                                first.contains(second) || second.contains(first) -> {
+                                    imageView.setImageResource(R.drawable.ic_checkbox_marked_circle)
+                                }
+                                else -> imageView.setImageResource(R.drawable.ic_alpha_x_circle)
+                            }
+                        }
+                        Mode.Matches -> {
+                            when {
+                                firstEditText.text.toString() == secondEditText.text.toString() -> {
+                                    imageView.setImageResource(R.drawable.ic_checkbox_marked_circle)
+                                } else -> imageView.setImageResource(R.drawable.ic_alpha_x_circle)
+                            }
+                        }
+                    }
                 }
             }
 
@@ -109,6 +157,12 @@ class CompareActivity : AppCompatActivity() {
             supportActionBar?.themedContext
             supportActionBar?.setDisplayHomeAsUpEnabled(true)
             supportActionBar?.setHomeButtonEnabled(true)
+        }
+
+        imageView.setOnClickListener {
+            firstEditText.setText("")
+            secondEditText.setText("")
+            firstEditText.requestFocus()
         }
     }
 
