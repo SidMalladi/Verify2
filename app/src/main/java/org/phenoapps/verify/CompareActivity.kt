@@ -1,30 +1,20 @@
 package org.phenoapps.verify
 
 import android.app.Activity
-import android.content.DialogInterface
-import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
-import android.preference.PreferenceManager
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.text.Editable
 import android.text.TextWatcher
-import android.view.KeyEvent
-import android.view.MenuItem
-import android.view.View
-import android.widget.EditText
-import android.widget.ImageView
-import android.widget.RadioButton
-import android.widget.RadioGroup
+import android.util.LayoutDirection
+import android.view.*
+import android.widget.*
 
 import com.google.zxing.ResultPoint
 
 import com.journeyapps.barcodescanner.BarcodeCallback
 import com.journeyapps.barcodescanner.BarcodeResult
 import com.journeyapps.barcodescanner.DecoratedBarcodeView
-import java.util.*
-import kotlin.concurrent.schedule
 
 class CompareActivity : AppCompatActivity() {
 
@@ -60,7 +50,7 @@ class CompareActivity : AppCompatActivity() {
 
                 findViewById<EditText>(mFocused).requestFocus()
             }
-            
+
             barcodeScannerView.resume()
 
         }
@@ -73,17 +63,18 @@ class CompareActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
 
-        val radioGroup = RadioGroup(this)
-        val containsRadioButton = RadioButton(this)
-        containsRadioButton.text = "Contains"
-        val matchesRadioButton = RadioButton(this)
-        matchesRadioButton.text = "Matches"
-        radioGroup.addView(containsRadioButton)
-        radioGroup.addView(matchesRadioButton)
+        val view = layoutInflater.inflate(R.layout.choice_compare_layout, null)
+
+        val radioGroup = view.findViewById<RadioGroup>(R.id.compare_radio_group)
+
+        val containsRadioButton = radioGroup.findViewById<RadioButton>(R.id.radioButton)
+        val matchesRadioButton = radioGroup.findViewById<RadioButton>(R.id.radioButton2)
+
+        containsRadioButton.isChecked = true
 
         val builder = AlertDialog.Builder(this).apply {
 
-            setView(radioGroup)
+            setView(view)
 
             setTitle("Choose compare mode:")
 
@@ -139,6 +130,7 @@ class CompareActivity : AppCompatActivity() {
                             }
                         }
                     }
+                    imageView.visibility = View.VISIBLE
                 }
             }
 
@@ -163,6 +155,7 @@ class CompareActivity : AppCompatActivity() {
             firstEditText.setText("")
             secondEditText.setText("")
             firstEditText.requestFocus()
+            imageView.visibility = View.INVISIBLE
         }
     }
 

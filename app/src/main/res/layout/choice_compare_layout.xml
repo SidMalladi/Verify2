@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/choice_compare_layout"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <RadioGroup
+        android:layout_width="match_parent"
+        android:layout_height="51dp"
+        android:orientation="horizontal"
+        android:id="@+id/compare_radio_group">
+
+        <RadioButton
+            android:id="@+id/radioButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Contains"
+            android:textAppearance="@style/AppIntroDefaultHeading" />
+
+        <RadioButton
+            android:id="@+id/radioButton2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Matches"
+            android:textAppearance="@style/AppIntroDefaultHeading" />
+    </RadioGroup>
+</RelativeLayout>
