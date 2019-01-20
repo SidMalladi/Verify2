@@ -5,25 +5,32 @@
     android:layout_height="wrap_content">
 
     <RadioGroup
+        android:id="@+id/compare_radio_group"
         android:layout_width="match_parent"
-        android:layout_height="51dp"
-        android:orientation="horizontal"
-        android:id="@+id/compare_radio_group">
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:orientation="vertical">
 
         <RadioButton
             android:id="@+id/radioButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:paddingLeft="20dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
             android:text="Contains"
-            android:textAppearance="@style/AppIntroDefaultHeading" />
+            android:textSize="18sp" />
 
         <RadioButton
             android:id="@+id/radioButton2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:paddingLeft="20dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
             android:text="Matches"
-            android:textAppearance="@style/AppIntroDefaultHeading" />
+            android:textSize="18sp" />
     </RadioGroup>
 </RelativeLayout>
