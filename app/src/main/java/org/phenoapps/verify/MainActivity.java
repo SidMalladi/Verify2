@@ -105,6 +105,8 @@ public class MainActivity extends AppCompatActivity {
         final View auxInfo = findViewById(R.id.auxScrollView);
         final View auxValue = findViewById(R.id.auxValueView);
 
+        Log.d("camera id", "onCreate: "+R.id.action_camera);
+
         if (sharedPref.getBoolean(SettingsActivity.AUX_INFO, false)) {
             auxInfo.setVisibility(View.VISIBLE);
             auxValue.setVisibility(View.VISIBLE);
@@ -728,30 +730,50 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     final public boolean onOptionsItemSelected(MenuItem item) {
-
-        DrawerLayout dl = (DrawerLayout) findViewById(org.phenoapps.verify.R.id.drawer_layout);
+        DrawerLayout dl = (DrawerLayout) findViewById(R.id.drawer_layout);
+        int action_camera = R.id.action_camera;
+        int action_compare = R.id.action_compare;
         if (mDrawerToggle.onOptionsItemSelected(item)) {
             return true;
         }
+        Log.d("debug switch", "onOptionsItemSelected: " + item.getItemId());
+//        switch (item.getItemId()) {
+//            case android.R.id.home:
+//                dl.openDrawer(GravityCompat.START);
+//                break;
+//            case action_camera:
+//                final Intent cameraIntent = new Intent(this, ScanActivity.class);
+//                startActivityForResult(cameraIntent, VerifyConstants.CAMERA_INTENT_REQ);
+//                break;
+//            case 1000030:
+//                final Intent compareIntent = new Intent(MainActivity.this, CompareActivity.class);
+//                runOnUiThread(new Runnable() {
+//                    @Override public void run() {
+//                        startActivity(compareIntent);
+//                    }
+//                });
+//                break;
+//            default:
+//                return super.onOptionsItemSelected(item);
+//        }
 
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                dl.openDrawer(GravityCompat.START);
-                break;
-            case org.phenoapps.verify.R.id.action_camera:
-                final Intent cameraIntent = new Intent(this, ScanActivity.class);
-                startActivityForResult(cameraIntent, VerifyConstants.CAMERA_INTENT_REQ);
-                break;
-            case R.id.action_compare:
-                final Intent compareIntent = new Intent(MainActivity.this, CompareActivity.class);
-                runOnUiThread(new Runnable() {
-                    @Override public void run() {
-                        startActivity(compareIntent);
-                    }
-                });
-                break;
-            default:
-                return super.onOptionsItemSelected(item);
+        if (item.getItemId() == android.R.id.home){
+            dl.openDrawer(GravityCompat.START);
+        }
+        else if(item.getItemId() == action_camera){
+            final Intent cameraIntent = new Intent(this, ScanActivity.class);
+            startActivityForResult(cameraIntent, VerifyConstants.CAMERA_INTENT_REQ);
+        }
+        else if(item.getItemId() == action_compare){
+            final Intent compareIntent = new Intent(MainActivity.this, CompareActivity.class);
+            runOnUiThread(new Runnable() {
+                @Override public void run() {
+                    startActivity(compareIntent);
+                }
+            });
+        }
+        else{
+            return super.onOptionsItemSelected(item);
         }
         return true;
     }
@@ -878,37 +900,61 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void selectDrawerItem(MenuItem menuItem) {
-        switch (menuItem.getItemId()) {
+        int itemId = menuItem.getItemId();
+        // constants like id in R class are no longer final, thus can't use switch here
+//        switch (menuItem.getItemId()) {
+//
+//            case org.phenoapps.verify.R.id.nav_import:
+//                final SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
+//                final int scanMode = Integer.valueOf(sharedPref.getString(SettingsActivity.SCAN_MODE_LIST, "-1"));
+//
+//                final Intent i = new Intent(Intent.ACTION_GET_CONTENT);
+//                i.setType("*/*");
+//                startActivityForResult(Intent.createChooser(i, "Choose file to import."), VerifyConstants.DEFAULT_CONTENT_REQ);
+//
+//                break;
+//            case org.phenoapps.verify.R.id.nav_settings:
+//                final Intent settingsIntent = new Intent(this, SettingsActivity.class);
+//                startActivityForResult(settingsIntent, VerifyConstants.SETTINGS_INTENT_REQ);
+//                break;
+//            case org.phenoapps.verify.R.id.nav_export:
+//                askUserExportFileName();
+//                break;
+//            case org.phenoapps.verify.R.id.nav_about:
+//                showAboutDialog();
+//                break;
+//            case org.phenoapps.verify.R.id.nav_intro:
+//                final Intent intro_intent = new Intent(MainActivity.this, IntroActivity.class);
+//                runOnUiThread(new Runnable() {
+//                    @Override public void run() {
+//                        startActivity(intro_intent);
+//                    }
+//                });
+//                break;
+//        }
 
-            case org.phenoapps.verify.R.id.nav_import:
-                final SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
-                final int scanMode = Integer.valueOf(sharedPref.getString(SettingsActivity.SCAN_MODE_LIST, "-1"));
+        if (itemId == R.id.nav_import){
+            final SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
+            final int scanMode = Integer.valueOf(sharedPref.getString(SettingsActivity.SCAN_MODE_LIST, "-1"));
 
-                final Intent i = new Intent(Intent.ACTION_GET_CONTENT);
-                i.setType("*/*");
-                startActivityForResult(Intent.createChooser(i, "Choose file to import."), VerifyConstants.DEFAULT_CONTENT_REQ);
+            final Intent i = new Intent(Intent.ACTION_GET_CONTENT);
+            i.setType("*/*");
+            startActivityForResult(Intent.createChooser(i, "Choose file to import."), VerifyConstants.DEFAULT_CONTENT_REQ);
+        } else if (itemId == R.id.nav_settings) {
+            final Intent settingsIntent = new Intent(this, SettingsActivity.class);
+            startActivityForResult(settingsIntent, VerifyConstants.SETTINGS_INTENT_REQ);
+        } else if (itemId == R.id.nav_export) {
+            askUserExportFileName();
+        } else if (itemId == R.id.nav_about) {
 
-                break;
-            case org.phenoapps.verify.R.id.nav_settings:
-                final Intent settingsIntent = new Intent(this, SettingsActivity.class);
-                startActivityForResult(settingsIntent, VerifyConstants.SETTINGS_INTENT_REQ);
-                break;
-            case org.phenoapps.verify.R.id.nav_export:
-                askUserExportFileName();
-                break;
-            case org.phenoapps.verify.R.id.nav_about:
-                showAboutDialog();
-                break;
-            case org.phenoapps.verify.R.id.nav_intro:
-                final Intent intro_intent = new Intent(MainActivity.this, IntroActivity.class);
-                runOnUiThread(new Runnable() {
-                    @Override public void run() {
-                        startActivity(intro_intent);
-                    }
-                });
-                break;
+        } else if (itemId == R.id.nav_intro) {
+            final Intent intro_intent = new Intent(MainActivity.this, IntroActivity.class);
+            runOnUiThread(new Runnable() {
+                @Override public void run() {
+                    startActivity(intro_intent);
+                }
+            });
         }
-
         DrawerLayout dl = (DrawerLayout) findViewById(org.phenoapps.verify.R.id.drawer_layout);
         dl.closeDrawers();
     }
@@ -941,6 +987,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void showAboutDialog()
     {
+        Log.d("hmmm", "showAboutDialog: yeah");
         android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
         {
             android.view.View personView = this.getLayoutInflater().inflate(
@@ -1051,10 +1098,14 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         if (externalWriteAccept && isExternalStorageWritable()) {
-            File verifyDirectory = new File(Environment.getExternalStorageDirectory().getPath() + "/Verify");
+//            File verifyDirectory = new File(Context.getExternalStorageDirectory().getPath() + "/Verify");
+            File verifyDirectory = new File(getExternalFilesDir(null), "/Verify");
+//            File file = new File(getExternalFilesDir(null), "DemoFile.jpg");
+            Log.d("test","onRequestPermissionsResult:"+verifyDirectory.getPath());
             if (!verifyDirectory.isDirectory()) {
                 final boolean makeDirsSuccess = verifyDirectory.mkdirs();
                 if (!makeDirsSuccess) Log.d("Verify Make Directory", "failed");
+                return ;
             }
             copyRawToVerify(verifyDirectory, "field_sample.csv", R.raw.field_sample);
             copyRawToVerify(verifyDirectory, "verify_pair_sample.csv", R.raw.verify_pair_sample);

@@ -16,24 +16,26 @@
         <activity
             android:name="org.phenoapps.verify.MainActivity"
             android:configChanges="keyboardHidden|screenSize|keyboard"
-            android:windowSoftInputMode="adjustPan">
+            android:windowSoftInputMode="adjustPan"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
-        <activity android:name=".CompareActivity"/>
+        <activity android:name=".CompareActivity" android:exported="true"/>
 
         <activity
-            android:name="org.phenoapps.verify.ScanActivity" />
+            android:name="org.phenoapps.verify.ScanActivity"
+            android:exported="true"/>
 
-        <activity android:name="org.phenoapps.verify.LoaderDBActivity"
+        <activity android:name="org.phenoapps.verify.LoaderDBActivity" android:exported="true"
             android:configChanges="orientation|keyboardHidden|screenSize|keyboard"/>
 
-        <activity android:name="org.phenoapps.verify.SettingsActivity" />
+        <activity android:name="org.phenoapps.verify.SettingsActivity" android:exported="true"/>
 
-        <activity android:name="org.phenoapps.verify.IntroActivity"
+        <activity android:name="org.phenoapps.verify.IntroActivity" android:exported="true"
             android:theme = "@style/AppThemeNoActionBar"/>
     </application>
 
